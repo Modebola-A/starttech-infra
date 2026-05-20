@@ -1,0 +1,43 @@
+# ---- CloudWatch Log Insights Queries ----
+# Log Group: /starttech/backend
+
+# 1. All ERROR logs in the last hour
+fields @timestamp, @message
+| filter @message like /ERROR/
+| sort @timestamp desc
+| limit 50
+
+# 2. Request count per minute
+fields @timestamp
+| stats count() as requests by bin(1m)
+| sort @timestamp desc
+
+# 3. Slow requests (over 1 second)
+fields @timestamp, @message
+| filter @message like /duration/
+| parse @message "duration=*ms" as duration_ms
+| filter duration_ms > 1000
+| sort duration_ms desc
+| limit 20
+
+# 4. Authentication failures
+fields @timestamp, @message
+| filter @message like /401/ or @message like /unauthorized/
+| sort @timestamp desc
+| limit 50
+
+# 5. Unique IPs making requests
+fields @timestamp, @message
+| parse @message "ip=*" as client_ip
+| stats count() as hits by client_ip
+| sort hits desc
+| limit 20
+
+# 6. Error rate over time
+fields @timestamp, @message
+| stats
+    count(*) as total,
+    count(@message) - count_if(@message like /ERROR/) as success,
+    count_if(@message like /ERROR/) as errors
+  by bin(5m)
+| sort @timestamp desc

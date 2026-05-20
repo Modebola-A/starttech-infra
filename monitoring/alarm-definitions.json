@@ -1,0 +1,52 @@
+{
+  "alarms": [
+    {
+      "name": "starttech-high-cpu",
+      "description": "EC2 CPU above 70% — triggers scale up",
+      "metric": "CPUUtilization",
+      "namespace": "AWS/EC2",
+      "threshold": 70,
+      "comparison": "GreaterThanThreshold",
+      "evaluation_periods": 2,
+      "period": 120,
+      "statistic": "Average",
+      "action": "scale-up"
+    },
+    {
+      "name": "starttech-low-cpu",
+      "description": "EC2 CPU below 20% — triggers scale down",
+      "metric": "CPUUtilization",
+      "namespace": "AWS/EC2",
+      "threshold": 20,
+      "comparison": "LessThanThreshold",
+      "evaluation_periods": 2,
+      "period": 120,
+      "statistic": "Average",
+      "action": "scale-down"
+    },
+    {
+      "name": "starttech-alb-5xx-errors",
+      "description": "ALB 5XX errors above 10 per minute",
+      "metric": "HTTPCode_ELB_5XX_Count",
+      "namespace": "AWS/ApplicationELB",
+      "threshold": 10,
+      "comparison": "GreaterThanThreshold",
+      "evaluation_periods": 2,
+      "period": 60,
+      "statistic": "Sum",
+      "action": "notify"
+    },
+    {
+      "name": "starttech-redis-high-memory",
+      "description": "Redis memory usage above 80%",
+      "metric": "DatabaseMemoryUsagePercentage",
+      "namespace": "AWS/ElastiCache",
+      "threshold": 80,
+      "comparison": "GreaterThanThreshold",
+      "evaluation_periods": 2,
+      "period": 300,
+      "statistic": "Average",
+      "action": "notify"
+    }
+  ]
+}
